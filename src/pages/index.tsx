@@ -7,7 +7,7 @@ import styles from "./home.module.scss";
 
 // Client-side
 // Server-side
-// Static Site Generation\\|/\|/\|/\|/\|/|\/|\/|\/\|/
+// Static Site Generation
 
 interface HomeProps {
   product: {
