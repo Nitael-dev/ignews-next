@@ -30,8 +30,6 @@ export async function saveSubscription (
   }
 
   if (createAction) {
-    console.log('1');
-    
     await fauna.query(
       q.Create(
         q.Collection('subscriptions'),
@@ -39,8 +37,6 @@ export async function saveSubscription (
       )
     );
   } else {
-    console.log('2');
-    
     await fauna.query(
       q.Replace(
         q.Select(

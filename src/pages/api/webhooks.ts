@@ -24,7 +24,6 @@ export const config = {
 // Set === Array no-repeat
 const relevantEvents = new Set([
   'checkout.session.completed',
-  'customer.subscription.created',
   'customer.subscription.updated',
   'customer.subscription.deleted',
 ]);
