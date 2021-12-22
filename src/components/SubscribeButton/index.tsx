@@ -23,7 +23,7 @@ const SubscribeButton = ({priceId}) => {
       return;
     }
 
-    if (session) {
+    if (session.activeSubscription) {
       router.push('/posts');
       return;
     }
@@ -37,6 +37,7 @@ const SubscribeButton = ({priceId}) => {
       const stripe = await getStripeJs();
 
       await stripe.redirectToCheckout({ sessionId });
+    
     } catch (err) {
       alert(err.message);
     }

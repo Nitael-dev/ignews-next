@@ -7,12 +7,7 @@ export default NextAuth({
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      authorization: {
-        params: {
-          scope: 'read:user'
-        }
-      }
+      clientSecret: process.env.GITHUB_CLIENT_SECRET
     },)
   ],
   callbacks: {
@@ -20,7 +15,8 @@ export default NextAuth({
       try {
         const userActiveSubscription = await fauna.query(
           q.Get(
-            q.Intersection([q.Match(
+            q.Intersection([
+              q.Match(
               q.Index('subscription_by_user_ref'),
               q.Select(
                 "ref",
@@ -35,41 +31,41 @@ export default NextAuth({
             q.Match(
               q.Index('subscription_by_status'),
               'active'
-            )])
+            )
+          ])
           )
         );
         return {...session.session,activeSubscription: userActiveSubscription};
       } catch (error) {
         return {...session.session,activeSubscription: null}
       }
-
     },
     async signIn(user) {
       const { email } = user.user
 
       try {
-        fauna.query(
-            q.If(
-              q.Not(
-                q.Exists(
-                  q.Match(
-                    q.Index('user_by_email'),
-                    q.Casefold(user.email)
-                  )
-                )
-              ),
-              q.Create(
-                q.Collection('users'),
-                { data: { email }}
-              ),
-              q.Get(
+        await fauna.query(
+          q.If(
+            q.Not(
+              q.Exists(
                 q.Match(
                   q.Index('user_by_email'),
-                  q.Casefold(user.email)
+                  q.Casefold(email)
                 )
+              )
+            ),
+            q.Create(
+              q.Collection('users'),
+              { data: { email: email }}
+            ),
+            q.Get(
+              q.Match(
+                q.Index('user_by_email'),
+                q.Casefold(email)
               )
             )
           )
+        )
         return true;
       } catch {
         return false;

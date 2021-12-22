@@ -22,7 +22,7 @@ export default function Post({ post }: PostProps) {
       </Head>
 
       <main className={styles.container}>
-        <article>
+        <article className={styles.post}>
           <h1>{post.title}</h1>
           <time>{post.updatedAt}</time>
           <div
@@ -39,11 +39,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
   const session = await getSession({ req });
 
   const { slug } = params;
-
-  if (!session.activeSubscription) {
+  console.log(session);
+  
+  if (!session?.activeSubscription) {
     return {
       redirect: {
-        destination: '/',
+        destination: `/posts/preview/${slug}`,
         permanent: false,
       }
     }
